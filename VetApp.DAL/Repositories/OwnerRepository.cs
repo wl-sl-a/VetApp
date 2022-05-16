@@ -7,7 +7,7 @@ using VetApp.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace VetApp.DAL.Repository
+namespace VetApp.DAL.Repositories
 {
     public class OwnerRepository : Repository<Owner>, IOwnerRepository
     {

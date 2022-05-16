@@ -8,7 +8,7 @@ namespace VetApp.Core.Services
 {
     public interface IAnimalService
     {
-        Task<IEnumerable<Owner>> GetAll(string iden);
+        Task<IEnumerable<Animal>> GetAll(string iden);
         Task<Animal> GetAnimalById(int id, string iden);
         Task<IEnumerable<Animal>> GetAnimalsByOwnerId(int animalId, string iden);
         Task<Animal> CreateAnimal(Animal newAnimal, string iden);

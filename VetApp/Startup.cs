@@ -12,12 +12,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VetApp.Core.Models;
 using VetApp.Core;
+using VetApp.Core.Services;
+using VetApp.BLL.Services;
 using VetApp.Core.Repositories;
 using VetApp.DAL.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Security.Cryptography.X509Certificates;
 using System.Collections.Generic;
 
 namespace VetApp
@@ -41,6 +41,9 @@ namespace VetApp
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr"), b => b.MigrationsAssembly("VetApp.DAL")));
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IOwnerService, OwnerService>();
+            services.AddTransient<IAnimalService, AnimalService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -133,7 +136,7 @@ namespace VetApp
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aquarium V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VetApp V1");
             });
         }
     }

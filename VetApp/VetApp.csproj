@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VetApp.BLL\VetApp.BLL.csproj" />
     <ProjectReference Include="..\VetApp.Core\VetApp.Core.csproj" />
     <ProjectReference Include="..\VetApp.DAL\VetApp.DAL.csproj" />
   </ItemGroup>

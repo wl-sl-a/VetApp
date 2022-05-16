@@ -6,6 +6,8 @@ namespace VetApp.DAL
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Owner> Owners { get; set; }
+        public DbSet<Animal> Animals { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
