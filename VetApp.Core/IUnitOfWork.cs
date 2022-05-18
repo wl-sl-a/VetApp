@@ -8,6 +8,7 @@ namespace VetApp.Core
     {
         IOwnerRepository Owners { get; }
         IAnimalRepository Animals { get; }
+        IDoctorRepository Doctors { get; }
         Task<int> CommitAsync();
     }
 }

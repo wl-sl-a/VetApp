@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VetApp.Core.Models;
 using VetApp.Core.Repositories;
+using VetApp.Core.Services;
 
 namespace Aquarium.Controllers
 {
@@ -24,12 +25,14 @@ namespace Aquarium.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
         private readonly IAuthRepository authRepository;
-        public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IAuthRepository authRepository)
+        private readonly IOwnerService ownerService;
+        public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IAuthRepository authRepository, IOwnerService ownerService)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
             this.authRepository = authRepository;
+            this.ownerService = ownerService;
         }
 
         [HttpPost]
@@ -73,7 +76,7 @@ namespace Aquarium.Controllers
 
         [HttpPost]
         [Route("register-user")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterOwnerModel model)
         {
             var userExists = await authRepository.FindByName(model.Username);
             if (userExists != null)
@@ -88,7 +91,10 @@ namespace Aquarium.Controllers
             var result = await authRepository.Create(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
+            Owner owner = new Owner();
+            owner.Username = model.Username;
+            owner.VetName = model.VetName;
+            await ownerService.CreateOwner(owner);
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 

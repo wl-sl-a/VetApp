@@ -11,10 +11,12 @@ namespace VetApp.Mapping
             // Domain to Resource
             CreateMap<Owner, OwnerResource>();
             CreateMap<Animal, AnimalResource>();
+            CreateMap<Doctor, DoctorResource>();
 
             // Resource to Domain
             CreateMap<OwnerResource, Owner>();
             CreateMap<AnimalResource, Animal>();
+            CreateMap<DoctorResource, Doctor>();
         }
     }
 }

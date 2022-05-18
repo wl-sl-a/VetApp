@@ -14,12 +14,12 @@ namespace VetApp.DAL.Repositories
 
         public async Task<IEnumerable<Animal>> GetAllAsync(string iden)
         {
-            return await Context.Set<Animal>().Where(p => p.Owner.VetName == iden).ToListAsync();
+            return await Context.Set<Animal>().Where(p => p.Owner.VetName == iden || p.Owner.Username == iden).ToListAsync();
         }
 
         public ValueTask<Animal> GetAnimalByIdAsync(int id, string iden)
         {
-            var a = Context.Set<Animal>().Where(p => p.Owner.VetName == iden).Where(p => p.Id == id).ToList();
+            var a = Context.Set<Animal>().Where(p => p.Owner.VetName == iden || p.Owner.Username == iden).Where(p => p.Id == id).ToList();
             if (a.Count == 1)
             {
                 var animal = Context.Set<Animal>().FindAsync(id);

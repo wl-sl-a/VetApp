@@ -36,6 +36,17 @@ namespace VetApp.DAL.Repositories
             return new ValueTask<Owner>();
         }
 
+        public Owner GetByOwnerByUsernameAsync(string username)
+        {
+            var a = Context.Set<Owner>().Where(p => p.Username == username).ToList();
+            if (a.Count == 1)
+            {
+                var owner = a.ElementAt(0);
+                return owner;
+            }
+            return new Owner();
+        }
+
         private ApplicationDbContext ApplicationDbContext
         {
             get { return Context as ApplicationDbContext; }

@@ -10,6 +10,7 @@ namespace VetApp.DAL
         private readonly ApplicationDbContext context;
         private AnimalRepository animalRepository;
         private OwnerRepository ownerRepository;
+        private DoctorRepository doctorRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
@@ -18,6 +19,8 @@ namespace VetApp.DAL
         public IAnimalRepository Animals => animalRepository = animalRepository ?? new AnimalRepository(context);
 
         public IOwnerRepository Owners => ownerRepository = ownerRepository ?? new OwnerRepository(context);
+
+        public IDoctorRepository Doctors => doctorRepository = doctorRepository ?? new DoctorRepository(context);
 
         public async Task<int> CommitAsync()
         {

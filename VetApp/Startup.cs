@@ -44,6 +44,7 @@ namespace VetApp
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IOwnerService, OwnerService>();
             services.AddTransient<IAnimalService, AnimalService>();
+            services.AddTransient<IDoctorService, DoctorService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -75,9 +76,9 @@ namespace VetApp
             services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 44340;
+                options.HttpsPort = 44379;
             });
-
+            services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "VetApp", Version = "v1" });

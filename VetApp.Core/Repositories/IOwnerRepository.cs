@@ -9,5 +9,6 @@ namespace VetApp.Core.Repositories
         Task<IEnumerable<Owner>> GetAllAsync(string iden);
         ValueTask<Owner> GetByIdAsync(int id, string iden);
         Task<IEnumerable<Owner>> Search(string iden, string param);
+        Owner GetByOwnerByUsernameAsync(string username);
     }
 }

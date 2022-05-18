@@ -22,6 +22,15 @@ namespace VetApp.BLL.Services
                 await unitOfWork.CommitAsync();
                 return newAnimal;
             }
+            else
+            {
+                var owner = unitOfWork.Owners.GetByOwnerByUsernameAsync(iden);
+                newAnimal.Owner = owner;
+                newAnimal.OwnerId = owner.Id;
+                await unitOfWork.Animals.AddAsync(newAnimal);
+                await unitOfWork.CommitAsync();
+                return newAnimal;
+            }
             return new Animal();
         }
 

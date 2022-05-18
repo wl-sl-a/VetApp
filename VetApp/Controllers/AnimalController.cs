@@ -1,87 +1,101 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using VetApp.Core.Services;
+using VetApp.Core.Models;
+using AutoMapper;
+using VetApp.Resources;
+using VetApp.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VetApp.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class AnimalController : Controller
     {
-        // GET: AnimalController
-        public ActionResult Index()
+        private readonly IAnimalService animalService;
+        private readonly IMapper mapper;
+
+        public AnimalController(IAnimalService animalService, IMapper mapper)
         {
-            return View();
+            this.mapper = mapper;
+            this.animalService = animalService;
         }
 
-        // GET: AnimalController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("")]
+        public async Task<ActionResult<IEnumerable<AnimalResource>>> GetAllAnimals()
         {
-            return View();
+            string iden = User.Identity.Name;
+            var animals = await animalService.GetAll(iden);
+            var animalResource = mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
+
+            return Ok(animalResource);
         }
 
-        // GET: AnimalController/Create
-        public ActionResult Create()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AnimalResource>> GetAnimalById(int id)
         {
-            return View();
+            string iden = User.Identity.Name;
+            var animal = await animalService.GetAnimalById(id, iden);
+            var animalResource = mapper.Map<Animal, AnimalResource>(animal);
+            return Ok(animalResource);
         }
 
-        // POST: AnimalController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        [HttpGet("owner/{id}")]
+        public async Task<ActionResult<IEnumerable<AnimalResource>>> GetAnimalsByOwnerId(int id)
         {
-            try
+            string iden = User.Identity.Name;
+            var animal = await animalService.GetAnimalsByOwnerId(id, iden);
+            var animalResource = mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animal);
+            return Ok(animalResource);
+        }
+
+        [HttpPost("")]
+        public async Task<ActionResult<AnimalResource>> CreateAnimal([FromBody] AnimalResource animalResource)
+        {
+            if (User.IsInRole(UserRoles.Company))
             {
-                return RedirectToAction(nameof(Index));
+                var animalToCreate = mapper.Map<AnimalResource, Animal>(animalResource);
+                string iden = User.Identity.Name;
+                var newAnimal = await animalService.CreateAnimal(animalToCreate, iden);
+                var animal = await animalService.GetAnimalById(newAnimal.Id, iden);
+                var animalResourc = mapper.Map<Animal, AnimalResource>(animal);
+
+                return Ok(animalResourc);
             }
-            catch
+            else
             {
-                return View();
+                var animalToCreate = mapper.Map<AnimalResource, Animal>(animalResource);
+                string iden = User.Identity.Name;
+                var newAnimal = await animalService.CreateAnimal(animalToCreate, iden);
+                var animal = await animalService.GetAnimalById(newAnimal.Id, iden);
+                var animalResourc = mapper.Map<Animal, AnimalResource>(animal);
+
+                return Ok(animalResourc);
             }
         }
 
-        // GET: AnimalController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAnimal(int id)
         {
-            return View();
+            string iden = User.Identity.Name;
+            var animal = await animalService.GetAnimalById(id, iden);
+            if (animal != null) await animalService.DeleteAnimal(animal);
+            return NoContent();
         }
 
-        // POST: AnimalController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AnimalResource>> UpdateAnimal(int id, [FromBody] AnimalResource animalResource)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            string iden = User.Identity.Name;
+            var animal = mapper.Map<AnimalResource, Animal>(animalResource);
+            await animalService.UpdateAnimal(id, animal);
 
-        // GET: AnimalController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AnimalController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var updatedAnimal = await animalService.GetAnimalById(id, iden);
+            var updatedAnimalResource = mapper.Map<Animal, AnimalResource>(updatedAnimal);
+            return Ok(updatedAnimalResource);
         }
     }
 }
