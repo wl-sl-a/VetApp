@@ -9,6 +9,9 @@ namespace VetApp.DAL
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Animal> Animals { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Visiting> Visitings { get; set; }
+        public DbSet<Direction> Directions { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 

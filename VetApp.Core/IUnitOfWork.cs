@@ -9,6 +9,9 @@ namespace VetApp.Core
         IOwnerRepository Owners { get; }
         IAnimalRepository Animals { get; }
         IDoctorRepository Doctors { get; }
+        IVisitingRepository Visitings { get; }
+        IAppointmentRepository Appointments { get; }
+        IDirectionRepository Directions { get; }
         Task<int> CommitAsync();
     }
 }

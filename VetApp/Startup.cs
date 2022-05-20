@@ -45,6 +45,9 @@ namespace VetApp
             services.AddTransient<IOwnerService, OwnerService>();
             services.AddTransient<IAnimalService, AnimalService>();
             services.AddTransient<IDoctorService, DoctorService>();
+            services.AddTransient<IAppointmentService, AppointmentService>();
+            services.AddTransient<IVisitingService, VisitingService>();
+            services.AddTransient<IDirectionService, DirectionService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
