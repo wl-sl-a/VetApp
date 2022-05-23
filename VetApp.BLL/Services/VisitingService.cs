@@ -3,6 +3,13 @@ using System.Threading.Tasks;
 using VetApp.Core;
 using VetApp.Core.Models;
 using VetApp.Core.Services;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Fonts;
+using PdfSharp.Charting;
+using PdfSharp.Internal;
+using System.Diagnostics;
+using System;
 
 namespace VetApp.BLL.Services
 {
@@ -16,11 +23,15 @@ namespace VetApp.BLL.Services
 
         public async Task<Visiting> CreateVisiting(Visiting newVisiting, string iden)
         {
-            if (unitOfWork.Visitings.CheckVet(newVisiting.Animal.OwnerId, iden))
+            newVisiting.Animal = await unitOfWork.Animals.GetAnimalByIdAsync(newVisiting.AnimalId, iden);
+            if (newVisiting.Animal != null)
             {
-                await unitOfWork.Visitings.AddAsync(newVisiting);
-                await unitOfWork.CommitAsync();
-                return newVisiting;
+                if (unitOfWork.Visitings.CheckVet(newVisiting.Animal.OwnerId, iden))
+                {
+                    await unitOfWork.Visitings.AddAsync(newVisiting);
+                    await unitOfWork.CommitAsync();
+                    return newVisiting;
+                }
             }
             return new Visiting();
         }
@@ -47,6 +58,42 @@ namespace VetApp.BLL.Services
         {
             return await unitOfWork.Visitings
                 .GetAllByAnimalIdAsync(animalId, iden);
+        }
+
+        public void print(string q)
+        {
+            try {
+                // Create a new PDF document
+                PdfDocument document = new PdfDocument();
+
+                // Create an empty page
+                PdfPage page = document.AddPage();
+                //page.Contents.CreateSingleContent().Stream.UnfilteredValue;
+
+                // Get an XGraphics object for drawing
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+
+                XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
+
+                // Create a font
+                XFont font = new XFont("Arial", 20, XFontStyle.Bold, options);
+
+                // Draw the text
+                gfx.DrawString("Hello, World!", font, XBrushes.Black,
+                  new XRect(0, 0, page.Width, page.Height),
+                  XStringFormats.Center);
+
+                // Save the document...
+                string filename = q;
+                document.Save(filename);
+                // ...and start a viewer.
+                Process.Start(filename);
+            }
+            catch(Exception i)
+            {
+
+            }
+           
         }
 
         public async Task UpdateVisiting(int id, Visiting visiting)

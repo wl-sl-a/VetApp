@@ -16,11 +16,19 @@ namespace VetApp.BLL.Services
 
         public async Task<Direction> CreateDirection(Direction newDirection, string iden)
         {
-            if (unitOfWork.Directions.CheckVet(newDirection.Visiting.Animal.OwnerId, iden))
+            newDirection.Visiting = await unitOfWork.Visitings.GetVisitingByIdAsync(newDirection.VisitingId, iden);
+            if (newDirection.Visiting != null)
             {
-                await unitOfWork.Directions.AddAsync(newDirection);
-                await unitOfWork.CommitAsync();
-                return newDirection;
+                newDirection.Visiting.Animal = await unitOfWork.Animals.GetAnimalByIdAsync(newDirection.Visiting.AnimalId, iden);
+            }
+            if (newDirection.Visiting.Animal != null)
+            {
+                if (unitOfWork.Directions.CheckVet(newDirection.Visiting.Animal.OwnerId, iden))
+                {
+                    await unitOfWork.Directions.AddAsync(newDirection);
+                    await unitOfWork.CommitAsync();
+                    return newDirection;
+                }
             }
             return new Direction();
         }

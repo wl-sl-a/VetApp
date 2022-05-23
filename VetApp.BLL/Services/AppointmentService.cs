@@ -16,20 +16,24 @@ namespace VetApp.BLL.Services
 
         public async Task<Appointment> CreateAppointment(Appointment newAppointment, string iden)
         {
-            if (unitOfWork.Appointments.CheckVet(newAppointment.Animal.OwnerId, iden))
+            newAppointment.Animal = await unitOfWork.Animals.GetAnimalByIdAsync(newAppointment.AnimalId, iden);
+            if(newAppointment.Animal != null)
             {
-                await unitOfWork.Appointments.AddAsync(newAppointment);
-                await unitOfWork.CommitAsync();
-                return newAppointment;
-            }
-            else
-            {
-                var owner = unitOfWork.Owners.GetByOwnerByUsernameAsync(iden);
-                newAppointment.Animal.Owner = owner;
-                newAppointment.Animal.OwnerId = owner.Id;
-                await unitOfWork.Appointments.AddAsync(newAppointment);
-                await unitOfWork.CommitAsync();
-                return newAppointment;
+                if (unitOfWork.Appointments.CheckVet(newAppointment.Animal.OwnerId, iden))
+                {
+                    await unitOfWork.Appointments.AddAsync(newAppointment);
+                    await unitOfWork.CommitAsync();
+                    return newAppointment;
+                }
+                else
+                {
+                    var owner = unitOfWork.Owners.GetByOwnerByUsernameAsync(iden);
+                    newAppointment.Animal.Owner = owner;
+                    newAppointment.Animal.OwnerId = owner.Id;
+                    await unitOfWork.Appointments.AddAsync(newAppointment);
+                    await unitOfWork.CommitAsync();
+                    return newAppointment;
+                }
             }
             return new Appointment();
         }
