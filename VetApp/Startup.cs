@@ -48,6 +48,8 @@ namespace VetApp
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IVisitingService, VisitingService>();
             services.AddTransient<IDirectionService, DirectionService>();
+            services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()

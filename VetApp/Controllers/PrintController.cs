@@ -33,7 +33,7 @@ namespace VetApp.Controllers
         {
             string iden = User.Identity.Name;
             var visiting = await visitingService.GetVisitingById(id, iden);
-            visitingService.print(id+".pdf");
+            visitingService.print(iden+".pdf", visiting);
 
             return Ok(visiting);
         }

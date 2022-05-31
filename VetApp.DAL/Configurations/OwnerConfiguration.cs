@@ -24,7 +24,10 @@ namespace VetApp.DAL.Configurations
                 .Property(m => m.Name)
                 .IsRequired()
                 .HasMaxLength(50);
-
+            builder
+                .Property(m => m.Email)
+                .IsRequired()
+                .HasMaxLength(50);
             builder
                 .Property(m => m.Phone)
                 .IsRequired()

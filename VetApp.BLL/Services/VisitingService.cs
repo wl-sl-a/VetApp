@@ -60,7 +60,7 @@ namespace VetApp.BLL.Services
                 .GetAllByAnimalIdAsync(animalId, iden);
         }
 
-        public void print(string q)
+        public void print(string q, Visiting visiting)
         {
             try {
                 // Create a new PDF document
@@ -82,7 +82,7 @@ namespace VetApp.BLL.Services
                 gfx.DrawString("Hello, World!", font, XBrushes.Black,
                   new XRect(0, 0, page.Width, page.Height),
                   XStringFormats.Center);
-
+                
                 // Save the document...
                 string filename = q;
                 document.Save(filename);

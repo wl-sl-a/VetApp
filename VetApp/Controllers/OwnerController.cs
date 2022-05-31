@@ -8,6 +8,9 @@ using VetApp.Core.Models;
 using AutoMapper;
 using VetApp.Resources;
 using Microsoft.AspNetCore.Authorization;
+using VetApp.Authentication;
+using VetApp.Core.Repositories;
+using Microsoft.AspNetCore.Http;
 
 namespace VetApp.Controllers
 {
@@ -17,11 +20,17 @@ namespace VetApp.Controllers
     public class OwnerController : Controller
     {
         private readonly IOwnerService ownerService;
+        private readonly IPasswordService passwordService;
+        private readonly IEmailService emailService;
         private readonly IMapper mapper;
-        public OwnerController(IOwnerService ownerService, IMapper mapper)
+        private readonly IAuthRepository authRepository;
+        public OwnerController(IOwnerService ownerService, IMapper mapper, IAuthRepository authRepository, IPasswordService passwordService, IEmailService emailService)
         {
             this.mapper = mapper;
             this.ownerService = ownerService;
+            this.authRepository = authRepository;
+            this.passwordService = passwordService;
+            this.emailService = emailService;
         }
 
         [HttpGet("")]
@@ -54,8 +63,15 @@ namespace VetApp.Controllers
         [HttpPost("")]
         public async Task<ActionResult<OwnerResource>> CreateOwner([FromBody] OwnerResource ownerResource)
         {
-            var ownerToCreate = mapper.Map<OwnerResource, Owner>(ownerResource);
             string iden = User.Identity.Name;
+            RegisterOwnerModel registerOwnerModel = new RegisterOwnerModel();
+            registerOwnerModel.Username = ownerResource.Username;
+            registerOwnerModel.Email = ownerResource.Email;
+            registerOwnerModel.VetName = iden;
+            registerOwnerModel.Password = passwordService.GeneratePassword(10, 20);
+            emailService.Send(registerOwnerModel.Username, registerOwnerModel.Password);
+            await RegisterOwner(registerOwnerModel);
+            var ownerToCreate = mapper.Map<OwnerResource, Owner>(ownerResource);
             ownerToCreate.VetName = iden;
             var newOwner = await ownerService.CreateOwner(ownerToCreate);
             var owner = await ownerService.GetOwnerById(newOwner.Id, iden);
@@ -83,6 +99,28 @@ namespace VetApp.Controllers
             var updatedOwner = await ownerService.GetOwnerById(id, iden);
             var updatedOwnerResource = mapper.Map<Owner, OwnerResource>(updatedOwner);
             return Ok(updatedOwnerResource);
+        }
+
+        public async Task<IActionResult> RegisterOwner(RegisterOwnerModel model)
+        {
+            var userExists = await authRepository.FindByName(model.Username);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
+            };
+            var result = await authRepository.Create(user, model.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            Owner owner = new Owner();
+            owner.Username = model.Username;
+            owner.VetName = model.VetName;
+            await ownerService.CreateOwner(owner);
+            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
     }
 }

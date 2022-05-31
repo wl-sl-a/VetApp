@@ -13,6 +13,7 @@ namespace VetApp.Core.Models
         public string Surname { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
+        public string Email { get; set; }
         public string Username { get; set; }
         public string VetName { get; set; }
         public ICollection<Animal> Animals { get; set; }

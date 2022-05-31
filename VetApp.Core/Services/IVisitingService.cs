@@ -14,6 +14,6 @@ namespace VetApp.Core.Services
         Task<Visiting> CreateVisiting(Visiting newVisiting, string iden);
         Task UpdateVisiting(int id, Visiting visiting);
         Task DeleteVisiting(Visiting visiting);
-        void print(string q);
+        void print(string q, Visiting visiting);
     }
 }

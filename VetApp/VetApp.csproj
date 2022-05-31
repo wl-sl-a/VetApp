@@ -1,11 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="FreeSpire.PDF" Version="8.2.0" />
+    <PackageReference Include="PDFSharp.Charting.NetStandard2" Version="1.51.5185.1" />
+    <PackageReference Include="Spire.PDF" Version="8.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
