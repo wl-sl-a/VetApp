@@ -15,6 +15,7 @@ namespace VetApp.Mapping
             CreateMap<Appointment, AppointmentResource>();
             CreateMap<Visiting, VisitingResource>();
             CreateMap<Direction, DirectionResource>();
+            CreateMap<Service, ServiceResource>();
 
             // Resource to Domain
             CreateMap<OwnerResource, Owner>();
@@ -23,6 +24,7 @@ namespace VetApp.Mapping
             CreateMap<AppointmentResource, Appointment>();
             CreateMap<VisitingResource, Visiting>();
             CreateMap<DirectionResource, Direction>();
+            CreateMap<ServiceResource, Service>();
         }
     }
 }

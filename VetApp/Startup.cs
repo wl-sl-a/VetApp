@@ -50,6 +50,7 @@ namespace VetApp
             services.AddTransient<IDirectionService, DirectionService>();
             services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IServiceService, ServiceService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()

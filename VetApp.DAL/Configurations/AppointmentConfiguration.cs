@@ -26,9 +26,9 @@ namespace VetApp.DAL.Configurations
                 .HasMaxLength(50);
 
             builder
-                .Property(m => m.TypeOfService)
-                .IsRequired()
-                .HasMaxLength(50);
+                .HasOne(m => m.Service)
+                .WithMany(a => a.Appointments)
+                .HasForeignKey(m => m.ServiceId);
 
             builder
                 .Property(m => m.Status)

@@ -12,6 +12,7 @@ namespace VetApp.Core
         IVisitingRepository Visitings { get; }
         IAppointmentRepository Appointments { get; }
         IDirectionRepository Directions { get; }
+        IServiceRepository Services { get; }
         Task<int> CommitAsync();
     }
 }

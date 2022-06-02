@@ -7,7 +7,7 @@
         public int DoctorId { get; set; }
         public string Date { get; set; }
         public string Time { get; set; }
-        public string TypeOfService { get; set; }
+        public int ServiceId { get; set; }
         public string Status { get; set; }
     }
 }

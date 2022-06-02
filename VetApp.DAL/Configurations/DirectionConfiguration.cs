@@ -16,9 +16,9 @@ namespace VetApp.DAL.Configurations
                 .UseIdentityColumn();
 
             builder
-                .Property(m => m.Service)
-                .IsRequired()
-                .HasMaxLength(150);
+                .HasOne(m => m.Service)
+                .WithMany(a => a.Directions)
+                .HasForeignKey(m => m.ServiceId);
 
             builder
                 .HasOne(m => m.Visiting)

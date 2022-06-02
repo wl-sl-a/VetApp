@@ -116,10 +116,6 @@ namespace VetApp.Controllers
             var result = await authRepository.Create(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            Owner owner = new Owner();
-            owner.Username = model.Username;
-            owner.VetName = model.VetName;
-            await ownerService.CreateOwner(owner);
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
     }

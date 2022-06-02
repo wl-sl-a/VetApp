@@ -43,7 +43,7 @@ namespace VetApp.Controllers
             return Ok(animalResource);
         }
 
-        [HttpGet("animal/{id}")]
+        [HttpGet("owner/{id}")]
         public async Task<ActionResult<IEnumerable<AnimalResource>>> GetAnimalsByOwnerId(int id)
         {
             string iden = User.Identity.Name;
