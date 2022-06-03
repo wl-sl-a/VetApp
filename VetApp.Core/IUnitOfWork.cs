@@ -13,6 +13,7 @@ namespace VetApp.Core
         IAppointmentRepository Appointments { get; }
         IDirectionRepository Directions { get; }
         IServiceRepository Services { get; }
+        IScheduleRepository Schedules { get; }
         Task<int> CommitAsync();
     }
 }

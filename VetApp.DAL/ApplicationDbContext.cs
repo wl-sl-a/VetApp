@@ -13,6 +13,7 @@ namespace VetApp.DAL
         public DbSet<Visiting> Visitings { get; set; }
         public DbSet<Direction> Directions { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 

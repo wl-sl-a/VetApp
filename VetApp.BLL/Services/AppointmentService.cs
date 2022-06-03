@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using VetApp.Core;
 using VetApp.Core.Models;
 using VetApp.Core.Services;
+using System;
 
 namespace VetApp.BLL.Services
 {
@@ -17,7 +18,8 @@ namespace VetApp.BLL.Services
         public async Task<Appointment> CreateAppointment(Appointment newAppointment, string iden)
         {
             newAppointment.Animal = await unitOfWork.Animals.GetAnimalByIdAsync(newAppointment.AnimalId, iden);
-            if(newAppointment.Animal != null)
+            if(newAppointment.Animal != null && !unitOfWork.Appointments.CheckAppointmentByDoctorIdDateTimeAsync(newAppointment.DoctorId,
+                newAppointment.Date, newAppointment.Time, iden))
             {
                 if (unitOfWork.Appointments.CheckVet(newAppointment.Animal.OwnerId, iden))
                 {
@@ -67,6 +69,24 @@ namespace VetApp.BLL.Services
             appointment.Id = id;
             unitOfWork.Appointments.Entry(appointment);
             await unitOfWork.CommitAsync();
+        }
+
+        private bool CheckDateTime(int doctorId, string date, string time, string iden)
+        {
+            var schedules = unitOfWork.Schedules.GetAllByDoctorIdAsync(doctorId, iden);
+            DateTime date1 = DateTime.ParseExact(date, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime time1 = DateTime.ParseExact(time, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+            foreach(Schedule schedule in schedules.Result)
+            {
+
+                if(schedule.Weekday == date1.DayOfWeek.ToString() 
+                    && DateTime.ParseExact(schedule.StartTime, "HH:mm", System.Globalization.CultureInfo.InvariantCulture) >= time1
+                    && DateTime.ParseExact(schedule.EndTime, "HH:mm", System.Globalization.CultureInfo.InvariantCulture) < time1)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

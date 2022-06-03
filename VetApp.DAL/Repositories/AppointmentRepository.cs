@@ -47,6 +47,17 @@ namespace VetApp.DAL.Repositories
             return false;
         }
 
+        public bool CheckAppointmentByDoctorIdDateTimeAsync(int doctorId, string date, string time, string iden)
+        {
+            var a = Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden).Where(p => p.DoctorId == doctorId)
+                .Where(p => p.Date == date).Where(p => p.Time == time).ToList();
+            if (a.Count == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private ApplicationDbContext ApplicationDbContext
         {
             get { return Context as ApplicationDbContext; }

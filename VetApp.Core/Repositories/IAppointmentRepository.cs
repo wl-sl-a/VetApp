@@ -10,5 +10,6 @@ namespace VetApp.Core.Repositories
         ValueTask<Appointment> GetAppointmentByIdAsync(int id, string iden);
         Task<IEnumerable<Appointment>> GetAllByAnimalIdAsync(int animalId, string iden);
         bool CheckVet(int id, string iden);
+        bool CheckAppointmentByDoctorIdDateTimeAsync(int doctorId, string date, string time, string iden);
     }
 }
