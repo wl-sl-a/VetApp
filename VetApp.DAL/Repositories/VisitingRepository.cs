@@ -37,6 +37,15 @@ namespace VetApp.DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Visiting>> GetAllByDoctorIdAsync(int doctorId, string iden)
+        {
+            return await ApplicationDbContext.Visitings
+                .Include(m => m.Doctor)
+                .Where(m => m.DoctorId == doctorId)
+                .Where(m => m.Doctor.VetName == iden)
+                .ToListAsync();
+        }
+
         public bool CheckVet(int id, string iden)
         {
             var a = Context.Set<Owner>().Where(p => p.VetName == iden).Where(p => p.Id == id).ToList();

@@ -51,10 +51,16 @@ namespace VetApp.BLL.Services
                 .GetDirectionByIdAsync(id, iden);
         }
 
-        public async Task<IEnumerable<Direction>> GetDirectionsByAnimalId(int visitingId, string iden)
+        public async Task<IEnumerable<Direction>> GetDirectionsByVisitingId(int visitingId, string iden)
         {
             return await unitOfWork.Directions
                 .GetAllByVisitingIdAsync(visitingId, iden);
+        }
+
+        public async Task<IEnumerable<Direction>> GetDirectionsByAnimalId(int animalId, string iden)
+        {
+            return await unitOfWork.Directions
+                .GetAllByAnimalIdAsync(animalId, iden);
         }
 
         public async Task UpdateDirection(int id, Direction direction)

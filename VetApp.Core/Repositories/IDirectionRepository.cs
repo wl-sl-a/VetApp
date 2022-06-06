@@ -9,6 +9,7 @@ namespace VetApp.Core.Repositories
         Task<IEnumerable<Direction>> GetAllAsync(string iden);
         ValueTask<Direction> GetDirectionByIdAsync(int id, string iden);
         Task<IEnumerable<Direction>> GetAllByVisitingIdAsync(int visitingId, string iden);
+        Task<IEnumerable<Direction>> GetAllByAnimalIdAsync(int animalId, string iden);
         bool CheckVet(int id, string iden);
     }
 }

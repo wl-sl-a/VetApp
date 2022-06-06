@@ -60,6 +60,12 @@ namespace VetApp.BLL.Services
                 .GetAllByAnimalIdAsync(animalId, iden);
         }
 
+        public async Task<IEnumerable<Visiting>> GetVisitingsByDoctorId(int doctorId, string iden)
+        {
+            return await unitOfWork.Visitings
+                .GetAllByDoctorIdAsync(doctorId, iden);
+        }
+
         public void print(string q, Visiting visiting)
         {
             try {

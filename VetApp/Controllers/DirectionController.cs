@@ -52,6 +52,15 @@ namespace VetApp.Controllers
             return Ok(directionResource);
         }
 
+        [HttpGet("visiting/{id}")]
+        public async Task<ActionResult<IEnumerable<DirectionResource>>> GetDirectionsByVisitingId(int id)
+        {
+            string iden = User.Identity.Name;
+            var direction = await directionService.GetDirectionsByVisitingId(id, iden);
+            var directionResource = mapper.Map<IEnumerable<Direction>, IEnumerable<DirectionResource>>(direction);
+            return Ok(directionResource);
+        }
+
         [HttpPost("")]
         public async Task<ActionResult<DirectionResource>> CreateDirection([FromBody] DirectionResource directionResource)
         {

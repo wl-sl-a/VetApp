@@ -52,6 +52,15 @@ namespace VetApp.Controllers
             return Ok(visitingResource);
         }
 
+        [HttpGet("doctor/{id}")]
+        public async Task<ActionResult<IEnumerable<VisitingResource>>> GetVisitingsByDoctorId(int id)
+        {
+            string iden = User.Identity.Name;
+            var visiting = await visitingService.GetVisitingsByDoctorId(id, iden);
+            var visitingResource = mapper.Map<IEnumerable<Visiting>, IEnumerable<VisitingResource>>(visiting);
+            return Ok(visitingResource);
+        }
+
         [HttpPost("")]
         public async Task<ActionResult<VisitingResource>> CreateVisiting([FromBody] VisitingResource visitingResource)
         {

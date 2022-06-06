@@ -11,6 +11,7 @@ namespace VetApp.Core.Services
         Task<IEnumerable<Visiting>> GetAll(string iden);
         Task<Visiting> GetVisitingById(int id, string iden);
         Task<IEnumerable<Visiting>> GetVisitingsByAnimalId(int animalId, string iden);
+        Task<IEnumerable<Visiting>> GetVisitingsByDoctorId(int doctorId, string iden);
         Task<Visiting> CreateVisiting(Visiting newVisiting, string iden);
         Task UpdateVisiting(int id, Visiting visiting);
         Task DeleteVisiting(Visiting visiting);
