@@ -36,10 +36,20 @@ namespace VetApp.Controllers
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<OwnerResource>>> GetAll()
         {
-            string iden = User.Identity.Name;
-            var owners = await ownerService.GetAll(iden);
-            var ownerResource = mapper.Map<IEnumerable<Owner>, IEnumerable<OwnerResource>>(owners);
-            return Ok(ownerResource);
+            if (User.IsInRole(UserRoles.Company))
+            {
+                string iden = User.Identity.Name;
+                var owners = await ownerService.GetAll(iden);
+                var ownerResource = mapper.Map<IEnumerable<Owner>, IEnumerable<OwnerResource>>(owners);
+                return Ok(ownerResource);
+            }
+            else
+            {
+                string username = User.Identity.Name;
+                var owner = ownerService.GetOwnerByUsername(username);
+                var ownerResource = mapper.Map<Owner, OwnerResource>(owner);
+                return Ok(ownerResource);
+            }
         }
 
         [HttpGet("search/{param}")]

@@ -11,6 +11,7 @@ namespace VetApp.Core.Services
         Task<Owner> CreateOwner(Owner newOwner);
         Task UpdateOwner(int id, Owner owner);
         Task DeleteOwner(Owner owner);
+        Owner GetOwnerByUsername(string username);
         Task<IEnumerable<Owner>> Search(string iden, string param);
     }
 }

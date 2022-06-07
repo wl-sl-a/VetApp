@@ -44,6 +44,11 @@ namespace VetApp.BLL.Services
             return await unitOfWork.Owners.GetByIdAsync(id, iden);
         }
 
+        public Owner GetOwnerByUsername(string username)
+        {
+            return unitOfWork.Owners.GetByOwnerByUsernameAsync(username);
+        }
+
         public async Task UpdateOwner(int id, Owner owner)
         {
             owner.Id = id;
