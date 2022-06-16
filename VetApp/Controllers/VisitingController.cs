@@ -7,6 +7,8 @@ using AutoMapper;
 using VetApp.Resources;
 using VetApp.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System;
 
 namespace VetApp.Controllers
 {

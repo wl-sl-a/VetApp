@@ -7,6 +7,7 @@ using VetApp.Core.Services;
 using VetApp.Core.Models;
 using AutoMapper;
 using VetApp.Resources;
+using VetApp.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
 namespace VetApp.Controllers
@@ -17,20 +18,33 @@ namespace VetApp.Controllers
     public class ServiceController : Controller
     {
         private readonly IServiceService serviceService;
+        private readonly IOwnerService ownerService;
         private readonly IMapper mapper;
-        public ServiceController(IServiceService serviceService, IMapper mapper)
+        public ServiceController(IServiceService serviceService, IMapper mapper, IOwnerService ownerService)
         {
             this.mapper = mapper;
             this.serviceService = serviceService;
+            this.ownerService = ownerService;
         }
 
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<ServiceResource>>> GetAll()
         {
-            string iden = User.Identity.Name;
-            var services = await serviceService.GetAll(iden);
-            var serviceResource = mapper.Map<IEnumerable<Service>, IEnumerable<ServiceResource>>(services);
-            return Ok(serviceResource);
+            if (User.IsInRole(UserRoles.Company))
+            {
+                string iden = User.Identity.Name;
+                var services = await serviceService.GetAll(iden);
+                var serviceResource = mapper.Map<IEnumerable<Service>, IEnumerable<ServiceResource>>(services);
+                return Ok(serviceResource);
+            }
+            else
+            {
+                string username = User.Identity.Name;
+                var owner = ownerService.GetOwnerByUsername(username);
+                var services = await serviceService.GetAll(owner.VetName);
+                var serviceResource = mapper.Map<IEnumerable<Service>, IEnumerable<ServiceResource>>(services);
+                return Ok(serviceResource);
+            }
         }
 
         [HttpGet("search/{param}")]

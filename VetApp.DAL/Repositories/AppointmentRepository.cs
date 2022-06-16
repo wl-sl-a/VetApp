@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VetApp.Core.Models;
 using VetApp.Core.Repositories;
+using System;
 
 namespace VetApp.DAL.Repositories
 {
@@ -49,7 +50,7 @@ namespace VetApp.DAL.Repositories
 
         public bool CheckAppointmentByDoctorIdDateTimeAsync(int doctorId, string date, string time, string iden)
         {
-            var a = Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden).Where(p => p.DoctorId == doctorId)
+            var a = Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden || p.Animal.Owner.Username == iden).Where(p => p.DoctorId == doctorId)
                 .Where(p => p.Date == date).Where(p => p.Time == time).ToList();
             if (a.Count == 1)
             {

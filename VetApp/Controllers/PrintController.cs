@@ -13,6 +13,8 @@ using PdfSharp.Fonts;
 using PdfSharp.Charting;
 using PdfSharp.Internal;
 using System.Diagnostics;
+using System.Security.Claims;
+using System;
 
 namespace VetApp.Controllers
 {
@@ -33,7 +35,8 @@ namespace VetApp.Controllers
         {
             string iden = User.Identity.Name;
             var visiting = await visitingService.GetVisitingById(id, iden);
-            visitingService.print(iden+".pdf", visiting);
+            string email = "**";
+            visitingService.print(DateTime.Now.ToString("dd_MM_yyyy__HH_mm_ss") + ".pdf", visiting, iden, email);
 
             return Ok(visiting);
         }

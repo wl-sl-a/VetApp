@@ -20,12 +20,14 @@ namespace VetApp.Controllers
     public class ScheduleController : Controller
     {
         private readonly IScheduleService scheduleService;
+        private readonly IOwnerService ownerService;
         private readonly IMapper mapper;
        
-        public ScheduleController(IScheduleService scheduleService, IMapper mapper)
+        public ScheduleController(IScheduleService scheduleService, IMapper mapper, IOwnerService ownerService)
         {
             this.mapper = mapper;
             this.scheduleService = scheduleService;
+            this.ownerService = ownerService;
         }
 
         [HttpGet("")]
@@ -90,17 +92,37 @@ namespace VetApp.Controllers
         [HttpGet("doctor_dates/{doctorId}")]
         public async Task<ActionResult<IEnumerable<string>>> GetDates(int doctorId)
         {
-            string iden = User.Identity.Name;
-            var dates = scheduleService.GetDates(doctorId, iden);
-            return Ok(dates);
+            if (User.IsInRole(UserRoles.Company))
+            {
+                string iden = User.Identity.Name;
+                var dates = scheduleService.GetDates(doctorId, iden);
+                return Ok(dates);
+            }
+            else
+            {
+                string username = User.Identity.Name;
+                var owner = ownerService.GetOwnerByUsername(username);
+                var dates = scheduleService.GetDates(doctorId, owner.VetName);
+                return Ok(dates);
+            }
         }
 
-        [HttpGet("doctor_times/{doctorId}")]
+        [HttpPost("doctor_times/{doctorId}")]
         public async Task<ActionResult<IEnumerable<string>>> GetTimes(int doctorId, [FromBody] string date)
         {
-            string iden = User.Identity.Name;
-            var times = scheduleService.GetFreeTimes(date, doctorId, iden);
-            return Ok(times);
+            if (User.IsInRole(UserRoles.Company))
+            {
+                string iden = User.Identity.Name;
+                var times = scheduleService.GetFreeTimes(date, doctorId, iden);
+                return Ok(times);
+            }
+            else
+            {
+                string username = User.Identity.Name;
+                var owner = ownerService.GetOwnerByUsername(username);
+                var times = scheduleService.GetFreeTimes(date, doctorId, owner.VetName);
+                return Ok(times);
+            }
         }
     }
 }

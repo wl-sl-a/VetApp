@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using VetApp.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace VetApp.Core.Services
 {
@@ -15,6 +16,6 @@ namespace VetApp.Core.Services
         Task<Visiting> CreateVisiting(Visiting newVisiting, string iden);
         Task UpdateVisiting(int id, Visiting visiting);
         Task DeleteVisiting(Visiting visiting);
-        void print(string q, Visiting visiting);
+        IActionResult print(string q, Visiting visiting, string iden, string email);
     }
 }

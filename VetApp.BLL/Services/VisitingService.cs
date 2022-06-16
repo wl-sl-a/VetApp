@@ -5,11 +5,17 @@ using VetApp.Core.Models;
 using VetApp.Core.Services;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
 using PdfSharp.Fonts;
 using PdfSharp.Charting;
 using PdfSharp.Internal;
 using System.Diagnostics;
 using System;
+using System.IO;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace VetApp.BLL.Services
 {
@@ -66,40 +72,39 @@ namespace VetApp.BLL.Services
                 .GetAllByDoctorIdAsync(doctorId, iden);
         }
 
-        public void print(string q, Visiting visiting)
+        public IActionResult print(string q, Visiting visiting, string iden, string email)
         {
-            try {
-                // Create a new PDF document
-                PdfDocument document = new PdfDocument();
+            var doctor = unitOfWork.Doctors.GetByIdAsync(visiting.DoctorId, iden);
+            var animal = unitOfWork.Animals.GetByIdAsync(visiting.AnimalId); 
+            
+            var document = new PdfDocument();
+            var page = document.AddPage();
+            XFont font = new XFont("Times New Roman", 14, XFontStyle.Regular);
+            var graphics = XGraphics.FromPdfPage(page);
+            var tf = new XTextFormatter(graphics);
 
-                // Create an empty page
-                PdfPage page = document.AddPage();
-                //page.Contents.CreateSingleContent().Stream.UnfilteredValue;
+            DrawHeader(graphics, iden, doctor.Result.Phone); // 80
+            DrawFooter(graphics); // 60
 
-                // Get an XGraphics object for drawing
-                XGraphics gfx = XGraphics.FromPdfPage(page);
+            string text = "Vet Conclusion № " + visiting.Id + "\n\nDoctor: " + doctor.Result.Specialty + " " + doctor.Result.Surname + " " + doctor.Result.Name +
+                "\nAnimal: " + visiting.AnimalId + " " + animal.Result.Name +
+                "\n\nDate: " + visiting.Date + "\nTime: " + visiting.Time + "\n\nDiagnosis: " + visiting.Diagnosis +
+                "\n\nAnalyzes: " + visiting.Analyzes + "\nExamination: " + visiting.Examination +
+                "\nMedicines: " + visiting.Medicines+
+                "\n\n\n\n" + doctor.Result.Specialty + " " + doctor.Result.Surname + " " + doctor.Result.Name + "       _____________________";
 
-                XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
 
-                // Create a font
-                XFont font = new XFont("Arial", 20, XFontStyle.Bold, options);
 
-                // Draw the text
-                gfx.DrawString("Hello, World!", font, XBrushes.Black,
-                  new XRect(0, 0, page.Width, page.Height),
-                  XStringFormats.Center);
-                
-                // Save the document...
-                string filename = q;
-                document.Save(filename);
-                // ...and start a viewer.
-                Process.Start(filename);
-            }
-            catch(Exception i)
-            {
+            XRect rect = new XRect(40, 100, 520, 400);
+            graphics.DrawRectangle(XBrushes.White, rect);
+            tf.Alignment = XParagraphAlignment.Justify;
+            tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
-            }
-           
+            var memoryStream = new MemoryStream();
+            document.Save(q);
+            document.Save(memoryStream);
+            return new FileStreamResult(memoryStream, new MediaTypeHeaderValue("application/pdf"));
+
         }
 
         public async Task UpdateVisiting(int id, Visiting visiting)
@@ -107,6 +112,33 @@ namespace VetApp.BLL.Services
             visiting.Id = id;
             unitOfWork.Visitings.Entry(visiting);
             await unitOfWork.CommitAsync();
+        }
+
+
+        void DrawHeader(XGraphics graphics, string iden, string phone)
+        {
+            var font = new XFont("Times New Roman", 12, 0);
+
+            graphics.DrawString("Veterinary Clinic:", font, XBrushes.Gray, 20, 20);
+            graphics.DrawString(iden, font, XBrushes.Black, 150, 20);
+
+            graphics.DrawString("Doctor's phone:", font, XBrushes.Gray, 20, 40);
+            graphics.DrawString(phone, font, XBrushes.Black, 150, 40);
+
+            graphics.DrawString("Date and Time", font, XBrushes.Gray, 20, 60);
+            graphics.DrawString(DateTime.Now.ToString("F"), font, XBrushes.Black, 150, 60); ;
+
+            var pen = new XPen(new XColor());
+            graphics.DrawLine(pen, 0, 80, graphics.PageSize.Width, 80);
+        }
+
+        void DrawFooter(XGraphics graphics)
+        {
+            var pen = new XPen(new XColor());
+            graphics.DrawLine(pen, 0, graphics.PageSize.Height - 60, graphics.PageSize.Width, graphics.PageSize.Height - 60);
+
+            var font = new XFont("Times New Roman", 14);
+            graphics.DrawString("Made with Vet App", font, XBrushes.Gray, 10, graphics.PageSize.Height - 30);
         }
     }
 }

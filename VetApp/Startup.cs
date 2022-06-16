@@ -52,6 +52,10 @@ namespace VetApp
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IServiceService, ServiceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
+            services.AddControllersWithViews()
+                 .AddNewtonsoftJson(options =>
+                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+             );
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
