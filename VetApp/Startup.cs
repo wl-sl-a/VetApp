@@ -19,6 +19,7 @@ using VetApp.DAL.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace VetApp
 {
@@ -52,10 +53,7 @@ namespace VetApp
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IServiceService, ServiceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
-            services.AddControllersWithViews()
-                 .AddNewtonsoftJson(options =>
-                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-             );
+           
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()

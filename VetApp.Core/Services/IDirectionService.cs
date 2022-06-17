@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using VetApp.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace VetApp.Core.Services
 {
@@ -15,5 +16,7 @@ namespace VetApp.Core.Services
         Task<Direction> CreateDirection(Direction newDirection, string iden);
         Task UpdateDirection(int id, Direction direction);
         Task DeleteDirection(Direction direction);
+
+        void print(string q, Direction direction, string iden);
     }
 }

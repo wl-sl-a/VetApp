@@ -15,7 +15,9 @@ namespace VetApp.DAL.Repositories
 
         public async Task<IEnumerable<Appointment>> GetAllAsync(string iden)
         {
-            return await Context.Set<Appointment>().Where(p => p.Animal.Owner.VetName == iden || p.Animal.Owner.Username == iden).ToListAsync();
+            return await Context.Set<Appointment>().Where(p => p.Animal.Owner.VetName == iden || p.Animal.Owner.Username == iden)
+                .Where(m => (DateTime)(object)m.Date >= DateTime.Now)
+                .ToListAsync();
         }
 
         public ValueTask<Appointment> GetAppointmentByIdAsync(int id, string iden)
@@ -29,12 +31,28 @@ namespace VetApp.DAL.Repositories
             return new ValueTask<Appointment>();
         }
 
+        public async ValueTask<Appointment> GetAppointmentByDateTimeAsync(int doctorId, string date, string time, string iden)
+        {
+            return await Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden || p.Animal.Owner.Username == iden).Where(p => p.DoctorId == doctorId)
+                .Where(p => p.Date == date).Where(p => p.Time == time).FirstOrDefaultAsync();
+        }
+
+
         public async Task<IEnumerable<Appointment>> GetAllByAnimalIdAsync(int animalId, string iden)
         {
             return await ApplicationDbContext.Appointments
                 .Include(m => m.Animal)
                 .Where(m => m.AnimalId == animalId)
                 .Where(m => m.Animal.Owner.VetName == iden)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetAllByDoctorIdAsync(int doctorId, string iden)
+        {
+            return await ApplicationDbContext.Appointments
+                .Include(m => m.Doctor)
+                .Where(m => m.DoctorId == doctorId)
+                .Where(m => m.Animal.Owner.VetName == iden && (DateTime)(object)m.Date >= DateTime.Now)
                 .ToListAsync();
         }
 

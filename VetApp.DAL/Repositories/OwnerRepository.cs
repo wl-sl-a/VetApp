@@ -22,7 +22,8 @@ namespace VetApp.DAL.Repositories
 
         public async Task<IEnumerable<Owner>> Search(string iden, string param)
         {
-            return await Context.Set<Owner>().Where(p => p.VetName == iden).Where(p => p.Surname.Contains(param)).ToListAsync();
+            return await Context.Set<Owner>().Where(p => p.VetName == iden).Where(p => p.Surname.Contains(param) || p.Name.Contains(param)
+            || p.Phone.Contains(param)).ToListAsync();
         }
 
         public ValueTask<Owner> GetByIdAsync(int id, string iden)

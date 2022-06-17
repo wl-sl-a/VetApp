@@ -72,7 +72,7 @@ namespace VetApp.BLL.Services
                 .GetAllByDoctorIdAsync(doctorId, iden);
         }
 
-        public IActionResult print(string q, Visiting visiting, string iden, string email)
+        public void print(string q, Visiting visiting, string iden)
         {
             var doctor = unitOfWork.Doctors.GetByIdAsync(visiting.DoctorId, iden);
             var animal = unitOfWork.Animals.GetByIdAsync(visiting.AnimalId); 
@@ -100,10 +100,7 @@ namespace VetApp.BLL.Services
             tf.Alignment = XParagraphAlignment.Justify;
             tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
-            var memoryStream = new MemoryStream();
             document.Save(q);
-            document.Save(memoryStream);
-            return new FileStreamResult(memoryStream, new MediaTypeHeaderValue("application/pdf"));
 
         }
 

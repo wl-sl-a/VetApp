@@ -11,6 +11,8 @@ namespace VetApp.Core.Services
         Task<IEnumerable<Appointment>> GetAll(string iden);
         Task<Appointment> GetAppointmentById(int id, string iden);
         Task<IEnumerable<Appointment>> GetAppointmentsByAnimalId(int animalId, string iden);
+        Task<IEnumerable<Appointment>> GetAppointmentsByDoctorId(int doctorId, string iden);
+        Task<IEnumerable<AppointmentTime>> GetAppointmentsByDoctorIdDate(int doctorId, string iden, string date);
         Task<Appointment> CreateAppointment(Appointment newAppointment, string iden);
         Task UpdateAppointment(int id, Appointment appointment);
         Task DeleteAppointment(Appointment appointment);

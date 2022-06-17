@@ -10,9 +10,11 @@ namespace VetApp.BLL.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IUnitOfWork unitOfWork;
-        public AppointmentService(IUnitOfWork unitOfWork)
+        private readonly IScheduleService scheduleService;
+        public AppointmentService(IUnitOfWork unitOfWork, IScheduleService scheduleService)
         {
             this.unitOfWork = unitOfWork;
+            this.scheduleService = scheduleService;
         }
 
         public async Task<Appointment> CreateAppointment(Appointment newAppointment, string iden)
@@ -64,11 +66,46 @@ namespace VetApp.BLL.Services
                 .GetAllByAnimalIdAsync(animalId, iden);
         }
 
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorId(int doctorId, string iden)
+        {
+            return await unitOfWork.Appointments
+                .GetAllByDoctorIdAsync(doctorId, iden);
+        }
+
         public async Task UpdateAppointment(int id, Appointment appointment)
         {
             appointment.Id = id;
             unitOfWork.Appointments.Entry(appointment);
             await unitOfWork.CommitAsync();
+        }
+
+        public async Task<IEnumerable<AppointmentTime>> GetAppointmentsByDoctorIdDate(int doctorId, string iden, string date)
+        {
+            List<AppointmentTime> appointmentTimes = new List<AppointmentTime>();
+            var times = scheduleService.GetTimes(date, doctorId, iden);
+            int i = 1;
+            foreach(String time in times)
+            {
+                if(unitOfWork.Appointments.CheckAppointmentByDoctorIdDateTimeAsync(doctorId, date, time, iden))
+                {
+                    var at = new AppointmentTime();
+                    at.Id = i;
+                    at.Time = time;
+                    at.Status = "taken";
+                    at.Appointment = unitOfWork.Appointments.GetAppointmentByDateTimeAsync(doctorId, date, time, iden).Result.Id;
+                    appointmentTimes.Add(at);
+                }
+                else
+                {
+                    var at = new AppointmentTime();
+                    at.Id = i;
+                    at.Time = time;
+                    at.Status = "free";
+                    appointmentTimes.Add(at);
+                }
+                i++;
+            }
+            return appointmentTimes;
         }
 
         private bool CheckDateTime(int doctorId, string date, string time, string iden)

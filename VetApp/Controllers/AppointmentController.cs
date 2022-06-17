@@ -52,6 +52,15 @@ namespace VetApp.Controllers
             return Ok(appointmentResource);
         }
 
+        [HttpGet("doctor/{id}")]
+        public async Task<ActionResult<IEnumerable<AppointmentResource>>> GetAppointmentsByDoctorId(int id)
+        {
+            string iden = User.Identity.Name;
+            var appointment = await appointmentService.GetAppointmentsByDoctorId(id, iden);
+            var appointmentResource = mapper.Map<IEnumerable<Appointment>, IEnumerable<AppointmentResource>>(appointment);
+            return Ok(appointmentResource);
+        }
+
         [HttpPost("")]
         public async Task<ActionResult<AppointmentResource>> CreateAppointment([FromBody] AppointmentResource appointmentResource)
         {
@@ -96,6 +105,38 @@ namespace VetApp.Controllers
             var updatedAppointment = await appointmentService.GetAppointmentById(id, iden);
             var updatedAppointmentResource = mapper.Map<Appointment, AppointmentResource>(updatedAppointment);
             return Ok(updatedAppointmentResource);
+        }
+
+        [HttpPost("app_dates/{doctorId}")]
+        public async Task<ActionResult<IEnumerable<AppointmentTime>>> GetTimesByDate(int doctorId, [FromBody] string date)
+        {
+            string iden = User.Identity.Name;
+            var times = await appointmentService.GetAppointmentsByDoctorIdDate(doctorId, iden, date);
+            var free = 0;
+            var taken = 0;
+            foreach(var time in times)
+            {
+                if (time.Status == "free") free++;
+                if (time.Status == "taken") taken++;
+            }
+           
+            return Ok(times);
+        }
+
+        [HttpPost("workload/{doctorId}")]
+        public async Task<ActionResult<IEnumerable<int>>> GetWorkloadByDate(int doctorId, [FromBody] string date)
+        {
+            string iden = User.Identity.Name;
+            var times = await appointmentService.GetAppointmentsByDoctorIdDate(doctorId, iden, date);
+            var free = 0;
+            var taken = 0;
+            foreach (var time in times)
+            {
+                if (time.Status == "free") free++;
+                if (time.Status == "taken") taken++;
+            }
+
+            return Ok(new { free, taken});
         }
     }
 }
