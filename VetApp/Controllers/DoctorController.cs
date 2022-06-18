@@ -52,7 +52,7 @@ namespace VetApp.Controllers
         {
             string iden = User.Identity.Name;
             var doctors = await doctorService.Search(iden, param);
-            var doctorResource = mapper.Map<IEnumerable<Doctor>, IEnumerable<OwnerResource>>(doctors);
+            var doctorResource = mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorResource>>(doctors);
             return Ok(doctorResource);
         }
 

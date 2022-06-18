@@ -34,6 +34,16 @@ namespace VetApp.Controllers
             return Ok(appointmentResource);
         }
 
+        [HttpPost("filter")]
+        public async Task<ActionResult<IEnumerable<AppointmentResource>>> FilterAllAppointments([FromBody]FilterAppointment filter)
+        {
+            string iden = User.Identity.Name;
+            var appointments = await appointmentService.FilterAll(iden, filter.Status, filter.AnimalId, filter.DoctorId, filter.ServiceId);
+            var appointmentResource = mapper.Map<IEnumerable<Appointment>, IEnumerable<AppointmentResource>>(appointments);
+
+            return Ok(appointmentResource);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimalResource>> GetAppointmentById(int id)
         {
@@ -96,7 +106,7 @@ namespace VetApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AnimalResource>> UpdateAnimal(int id, [FromBody] AppointmentResource appointmentResource)
+        public async Task<ActionResult<AnimalResource>> UpdateAppointment(int id, [FromBody] AppointmentResource appointmentResource)
         {
             string iden = User.Identity.Name;
             var appointment = mapper.Map<AppointmentResource, Appointment>(appointmentResource);
@@ -107,18 +117,34 @@ namespace VetApp.Controllers
             return Ok(updatedAppointmentResource);
         }
 
+        [HttpPut("confirm/{id}")]
+        public async Task<ActionResult<AnimalResource>> ConfirmAppointment(int id)
+        {
+            string iden = User.Identity.Name;
+            await appointmentService.ConfirmAppointment(id, iden);
+
+            var confirmedAppointment = await appointmentService.GetAppointmentById(id, iden);
+            var confirmedAppointmentResource = mapper.Map<Appointment, AppointmentResource>(confirmedAppointment);
+            return Ok(confirmedAppointmentResource);
+        }
+
+        [HttpPut("cancel/{id}")]
+        public async Task<ActionResult<AnimalResource>> CancelAppointment(int id)
+        {
+            string iden = User.Identity.Name;
+            await appointmentService.CancelAppointment(id, iden);
+
+            var confirmedAppointment = await appointmentService.GetAppointmentById(id, iden);
+            var confirmedAppointmentResource = mapper.Map<Appointment, AppointmentResource>(confirmedAppointment);
+            return Ok(confirmedAppointmentResource);
+        }
+
         [HttpPost("app_dates/{doctorId}")]
         public async Task<ActionResult<IEnumerable<AppointmentTime>>> GetTimesByDate(int doctorId, [FromBody] string date)
         {
             string iden = User.Identity.Name;
             var times = await appointmentService.GetAppointmentsByDoctorIdDate(doctorId, iden, date);
-            var free = 0;
-            var taken = 0;
-            foreach(var time in times)
-            {
-                if (time.Status == "free") free++;
-                if (time.Status == "taken") taken++;
-            }
+    
            
             return Ok(times);
         }

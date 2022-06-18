@@ -20,6 +20,17 @@ namespace VetApp.DAL.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Appointment>> FilterAllAsync(string iden, string status, int? aid, int? did, int? sid)
+        {
+            return await Context.Set<Appointment>().Where(p => p.Animal.Owner.VetName == iden || p.Animal.Owner.Username == iden)
+                .Where(m => (DateTime)(object)m.Date >= DateTime.Now)
+                .Where(m => m.Status == status || status == null)
+                .Where(m => m.AnimalId == aid || aid == null)
+                .Where(m => m.DoctorId == did || did == null)
+                .Where(m => m.ServiceId == sid || sid == null)
+                .ToListAsync();
+        }
+
         public ValueTask<Appointment> GetAppointmentByIdAsync(int id, string iden)
         {
             var a = Context.Set<Appointment>().Where(p => p.Animal.Owner.VetName == iden || p.Animal.Owner.Username == iden).Where(p => p.Id == id).ToList();
@@ -34,7 +45,7 @@ namespace VetApp.DAL.Repositories
         public async ValueTask<Appointment> GetAppointmentByDateTimeAsync(int doctorId, string date, string time, string iden)
         {
             return await Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden || p.Animal.Owner.Username == iden).Where(p => p.DoctorId == doctorId)
-                .Where(p => p.Date == date).Where(p => p.Time == time).FirstOrDefaultAsync();
+                .Where(p => p.Date == date).Where(p => p.Time == time).Where(p => p.Status != "cancelled").FirstOrDefaultAsync();
         }
 
 
@@ -69,7 +80,7 @@ namespace VetApp.DAL.Repositories
         public bool CheckAppointmentByDoctorIdDateTimeAsync(int doctorId, string date, string time, string iden)
         {
             var a = Context.Set<Appointment>().Where(p => p.Doctor.VetName == iden || p.Animal.Owner.Username == iden).Where(p => p.DoctorId == doctorId)
-                .Where(p => p.Date == date).Where(p => p.Time == time).ToList();
+                .Where(p => p.Date == date).Where(p => p.Time == time).Where(p => p.Status != "cancelled").ToList();
             if (a.Count == 1)
             {
                 return true;

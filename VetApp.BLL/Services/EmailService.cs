@@ -16,7 +16,7 @@ namespace VetApp.BLL.Services
             m.IsBodyHtml = true;
             SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
             smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential("appvet390@gmail.com", "vet_app321");
+            smtp.Credentials = new NetworkCredential("appvet390@gmail.com", "jvcmeytgaobkmtzm");
             smtp.EnableSsl = true;
             smtp.Send(m);
         }

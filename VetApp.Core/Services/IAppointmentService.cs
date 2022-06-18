@@ -16,5 +16,8 @@ namespace VetApp.Core.Services
         Task<Appointment> CreateAppointment(Appointment newAppointment, string iden);
         Task UpdateAppointment(int id, Appointment appointment);
         Task DeleteAppointment(Appointment appointment);
+        Task ConfirmAppointment(int id, string iden);
+        Task CancelAppointment(int id, string iden);
+        Task<IEnumerable<Appointment>> FilterAll(string iden, string status, int? aid, int? did, int? sid);
     }
 }

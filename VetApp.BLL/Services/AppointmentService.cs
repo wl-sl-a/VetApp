@@ -54,6 +54,12 @@ namespace VetApp.BLL.Services
                 .GetAllAsync(iden);
         }
 
+        public async Task<IEnumerable<Appointment>> FilterAll(string iden, string status, int? aid, int? did, int? sid)
+        {
+            return await unitOfWork.Appointments
+                .FilterAllAsync(iden, status, aid, did, sid);
+        }
+
         public async Task<Appointment> GetAppointmentById(int id, string iden)
         {
             return await unitOfWork.Appointments
@@ -75,6 +81,24 @@ namespace VetApp.BLL.Services
         public async Task UpdateAppointment(int id, Appointment appointment)
         {
             appointment.Id = id;
+            unitOfWork.Appointments.Entry(appointment);
+            await unitOfWork.CommitAsync();
+        }
+
+        public async Task ConfirmAppointment(int id, string iden)
+        {
+            var appointment = GetAppointmentById(id, iden).Result;
+            appointment.Id = id;
+            appointment.Status = "confirmed";
+            unitOfWork.Appointments.Entry(appointment);
+            await unitOfWork.CommitAsync();
+        }
+
+        public async Task CancelAppointment(int id, string iden)
+        {
+            var appointment = GetAppointmentById(id, iden).Result;
+            appointment.Id = id;
+            appointment.Status = "cancelled";
             unitOfWork.Appointments.Entry(appointment);
             await unitOfWork.CommitAsync();
         }
