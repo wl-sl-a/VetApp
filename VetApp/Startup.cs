@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace VetApp
 {
@@ -53,7 +54,7 @@ namespace VetApp
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IServiceService, ServiceService>();
             services.AddTransient<IScheduleService, ScheduleService>();
-           
+            services.AddTransient<IAdminService, AdminService>();
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -116,6 +117,24 @@ namespace VetApp
                         }
                     };
                 options.AddSecurityRequirement(security);
+            });
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddCertificateForwarding(options =>
+            {
+                options.CertificateHeader = "X-SSL-CERT";
+                options.HeaderConverter = (headerValue) =>
+                {
+                    X509Certificate2 clientCertificate = null;
+
+                    if (!string.IsNullOrWhiteSpace(headerValue))
+                    {
+                        byte[] bytes = Encoding.ASCII.GetBytes(headerValue);
+                        clientCertificate = new X509Certificate2(bytes);
+                    }
+
+                    return clientCertificate;
+                };
             });
 
         }

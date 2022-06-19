@@ -14,6 +14,7 @@ namespace VetApp.Core
         IDirectionRepository Directions { get; }
         IServiceRepository Services { get; }
         IScheduleRepository Schedules { get; }
+        IAdminRepository Admin { get; }
         Task<int> CommitAsync();
     }
 }

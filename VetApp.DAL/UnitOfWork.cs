@@ -16,6 +16,7 @@ namespace VetApp.DAL
         private DirectionRepository directionRepository;
         private ServiceRepository serviceRepository;
         private ScheduleRepository scheduleRepository;
+        private AdminRepository adminRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
@@ -35,6 +36,7 @@ namespace VetApp.DAL
 
         public IServiceRepository Services => serviceRepository = serviceRepository ?? new ServiceRepository(context);
         public IScheduleRepository Schedules => scheduleRepository = scheduleRepository ?? new ScheduleRepository(context);
+        public IAdminRepository Admin => adminRepository = adminRepository ?? new AdminRepository();
 
         public async Task<int> CommitAsync()
         {

@@ -134,9 +134,9 @@ namespace VetApp.Controllers
             string iden = User.Identity.Name;
             await appointmentService.CancelAppointment(id, iden);
 
-            var confirmedAppointment = await appointmentService.GetAppointmentById(id, iden);
-            var confirmedAppointmentResource = mapper.Map<Appointment, AppointmentResource>(confirmedAppointment);
-            return Ok(confirmedAppointmentResource);
+            var cancelledAppointment = await appointmentService.GetAppointmentById(id, iden);
+            var cancelledAppointmentResource = mapper.Map<Appointment, AppointmentResource>(cancelledAppointment);
+            return Ok(cancelledAppointmentResource);
         }
 
         [HttpPost("app_dates/{doctorId}")]
