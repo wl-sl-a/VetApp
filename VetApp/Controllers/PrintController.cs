@@ -38,9 +38,10 @@ namespace VetApp.Controllers
         {
             string iden = User.Identity.Name;
             var visiting = await visitingService.GetVisitingById(id, iden);
-            visitingService.print(DateTime.Now.ToString("dd_MM_yyyy__HH_mm_ss") + ".pdf", visiting, iden);
+            string q = DateTime.Now.ToString("dd_MM_yyyy__HH_mm_ss") + ".pdf";
+            visitingService.print(q, visiting, iden);
 
-            return Ok();
+            return PhysicalFile(@"D:\ХНУРЭ курс 4 semester 2\VetApp\VetApp\VetApp\"+q, "application/pdf", q);
         }
 
         [HttpGet("direction/{id}")]
@@ -48,9 +49,10 @@ namespace VetApp.Controllers
         {
             string iden = User.Identity.Name;
             var direction = await directionService.GetDirectionById(id, iden);
-            directionService.print(DateTime.Now.ToString("dd_MM_yyyy__HH_mm_ss") + ".pdf", direction, iden);
+            string q = DateTime.Now.ToString("_dd_MM_yyyy__HH_mm_ss") + ".pdf";
+            directionService.print(q, direction, iden);
 
-            return Ok();
+            return PhysicalFile(@"D:\ХНУРЭ курс 4 semester 2\VetApp\VetApp\VetApp\" + q, "application/pdf", q);
         }
     }
 }

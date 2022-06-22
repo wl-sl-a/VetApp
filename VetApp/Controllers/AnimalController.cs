@@ -49,6 +49,26 @@ namespace VetApp.Controllers
            
         }
 
+        [HttpGet("search/{param}")]
+        public async Task<ActionResult<IEnumerable<AnimalResource>>> Search(string param)
+        {
+            if (User.IsInRole(UserRoles.Company))
+            {
+                string iden = User.Identity.Name;
+                var animals = await animalService.Search(iden, param);
+                var animalResource = mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
+                return Ok(animalResource);
+            }
+            else
+            {
+                string username = User.Identity.Name;
+                var owner = ownerService.GetOwnerByUsername(username);
+                var animals = await animalService.SearchByOwnerId(owner.VetName, param, owner.Id);
+                var animalResource = mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
+                return Ok(animalResource);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimalResource>> GetAnimalById(int id)
         {

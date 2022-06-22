@@ -28,6 +28,18 @@ namespace VetApp.DAL.Repositories
             return new ValueTask<Animal>();
         }
 
+        public async Task<IEnumerable<Animal>> Search(string iden, string param)
+        {
+            return await Context.Set<Animal>().Where(p => p.Owner.VetName == iden).Where(p => p.Name.Contains(param) ||
+            p.Kind.Contains(param)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Animal>> SearchByOwnerId(string iden, string param, int ownerId)
+        {
+            return await Context.Set<Animal>().Where(p => p.Owner.VetName == iden && p.OwnerId == ownerId).Where(p => p.Name.Contains(param) ||
+            p.Kind.Contains(param)).ToListAsync();
+        }
+
         public async Task<IEnumerable<Animal>> GetAllByOwnerIdAsync(int ownerId, string iden)
         {
             return await ApplicationDbContext.Animals

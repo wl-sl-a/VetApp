@@ -8,6 +8,6 @@ namespace VetApp.Core.Services
 {
     public interface IEmailService
     {
-        void Send(string username, string password);
+        void Send(string username, string password, string email);
     }
 }

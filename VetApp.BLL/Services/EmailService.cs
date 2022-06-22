@@ -6,10 +6,10 @@ namespace VetApp.BLL.Services
 {
     public class EmailService: IEmailService
     {
-        public void Send(string username, string password)
+        public void Send(string username, string password, string email)
         {
             MailAddress from = new MailAddress("appvet390@gmail.com", "Vet App");
-            MailAddress to = new MailAddress("anastasiia.solianyk@nure.ua");
+            MailAddress to = new MailAddress(email);
             MailMessage m = new MailMessage(from, to);
             m.Subject = "Username and Password for VetApp";
             m.Body = "<p> Username:  " + username + "</p><p> Password:  " + password+ "</p>";

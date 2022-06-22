@@ -79,7 +79,7 @@ namespace VetApp.Controllers
             registerOwnerModel.Email = ownerResource.Email;
             registerOwnerModel.VetName = iden;
             registerOwnerModel.Password = passwordService.GeneratePassword(10, 20);
-            emailService.Send(registerOwnerModel.Username, registerOwnerModel.Password);
+            emailService.Send(registerOwnerModel.Username, registerOwnerModel.Password, registerOwnerModel.Email);
             await RegisterOwner(registerOwnerModel);
             var ownerToCreate = mapper.Map<OwnerResource, Owner>(ownerResource);
             ownerToCreate.VetName = iden;
@@ -102,7 +102,6 @@ namespace VetApp.Controllers
         public async Task<ActionResult<OwnerResource>> UpdateOwner(int id, [FromBody] OwnerResource ownerResource)
         {
             string iden = User.Identity.Name;
-            ownerResource.VetName = iden;
             var owner = mapper.Map<OwnerResource, Owner>(ownerResource);
             await ownerService.UpdateOwner(id, owner);
 
@@ -111,6 +110,7 @@ namespace VetApp.Controllers
             return Ok(updatedOwnerResource);
         }
 
+        [HttpPost("reg_owner")]
         public async Task<IActionResult> RegisterOwner(RegisterOwnerModel model)
         {
             var userExists = await authRepository.FindByName(model.Username);

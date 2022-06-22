@@ -11,6 +11,7 @@ using PdfSharp.Charting;
 using PdfSharp.Internal;
 using System.Diagnostics;
 using System;
+using Spire.Pdf;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +78,7 @@ namespace VetApp.BLL.Services
             var doctor = unitOfWork.Doctors.GetByIdAsync(visiting.DoctorId, iden);
             var animal = unitOfWork.Animals.GetByIdAsync(visiting.AnimalId); 
             
-            var document = new PdfDocument();
+            var document = new PdfSharp.Pdf.PdfDocument();
             var page = document.AddPage();
             XFont font = new XFont("Times New Roman", 14, XFontStyle.Regular);
             var graphics = XGraphics.FromPdfPage(page);
@@ -101,7 +102,8 @@ namespace VetApp.BLL.Services
             tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
             document.Save(q);
-
+          
+           
         }
 
         public async Task UpdateVisiting(int id, Visiting visiting)

@@ -14,5 +14,7 @@ namespace VetApp.Core.Services
         Task<Animal> CreateAnimal(Animal newAnimal, string iden);
         Task UpdateAnimal(int id, Animal animal);
         Task DeleteAnimal(Animal animal);
+        Task<IEnumerable<Animal>> Search(string iden, string param);
+        Task<IEnumerable<Animal>> SearchByOwnerId(string iden, string param, int ownerId);
     }
 }

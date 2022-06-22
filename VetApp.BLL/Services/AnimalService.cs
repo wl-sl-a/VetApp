@@ -46,6 +46,16 @@ namespace VetApp.BLL.Services
                 .GetAllAsync(iden);
         }
 
+        public async Task<IEnumerable<Animal>> Search(string iden, string param)
+        {
+            return await unitOfWork.Animals.Search(iden, param);
+        }
+
+        public async Task<IEnumerable<Animal>> SearchByOwnerId(string iden, string param, int ownerId)
+        {
+            return await unitOfWork.Animals.SearchByOwnerId(iden, param, ownerId);
+        }
+
         public async Task<Animal> GetAnimalById(int id, string iden)
         {
             return await unitOfWork.Animals

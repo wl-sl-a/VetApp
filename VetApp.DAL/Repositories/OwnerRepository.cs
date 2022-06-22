@@ -28,7 +28,7 @@ namespace VetApp.DAL.Repositories
 
         public ValueTask<Owner> GetByIdAsync(int id, string iden)
         {
-            var a = Context.Set<Owner>().Where(p => p.VetName == iden).Where(p => p.Id == id).ToList();
+            var a = Context.Set<Owner>().Where(p => p.VetName == iden || p.Username == iden).Where(p => p.Id == id).ToList();
             if (a.Count == 1)
             {
                 var owner = Context.Set<Owner>().FindAsync(id);
